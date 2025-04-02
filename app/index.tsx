@@ -1,11 +1,18 @@
 import { BaseModal } from "@/components/BaseModal";
 import { Text, View } from "@/components/Themed";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useState } from "react";
-import { StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, TextInput, TouchableOpacity, FlatList } from "react-native";
+import { usePosts } from "@/data/Posts";
 
 export default function Index() {
     const [showModal, setShowModal] = useState(false);
+
+    const { posts, getPosts } = usePosts();
+
+    useEffect(() => {
+        getPosts();
+    }, [])
 
     return (
         <View lightColor="#F2F4F7" style={styles.container}>
@@ -19,33 +26,30 @@ export default function Index() {
                     <Text style={styles.buttonText}>Adicionar</Text>
                 </TouchableOpacity>
             </BaseModal>
-            <TouchableOpacity activeOpacity={.7} style={styles.cardContainer}>
-                <Text style={styles.title}>Non labore exercitation pariatur dolore deserunt.</Text>
-                <Text style={styles.description}>Consequat Lorem irure elit proident dolor ex in minim cupidatat tempor in Lorem est aliquip. Enim eu incididunt non laborum nulla dolore amet commodo cillum do. Consectetur qui sit Lorem ut ut excepteur velit esse. Officia dolor proident deserunt culpa eiusmod incididunt non eiusmod ex elit. Cupidatat id dolore nulla culpa aliqua sunt ut nulla quis. Do ullamco anim qui officia occaecat deserunt deserunt nulla commodo commodo ea dolore veniam culpa. Dolor anim reprehenderit amet laboris amet non aliquip ex sint.</Text>
-                <View style={styles.cardOptionContainer}>
-                    <TouchableOpacity activeOpacity={.7} style={styles.cardOptionButton} onPress={() => setShowModal(true)}>
-                        <MaterialIcons name="edit" size={18} />
+
+            <FlatList
+                data={posts}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                    <TouchableOpacity activeOpacity={.7} style={styles.cardContainer}>
+                        <Text style={styles.title}>{item.title}</Text>
+                        <Text style={styles.description}>{item.body}</Text>
+                        <View style={styles.cardOptionContainer}>
+                            <TouchableOpacity activeOpacity={.7} style={styles.cardOptionButton} onPress={() => setShowModal(true)}>
+                                <MaterialIcons name="edit" size={18} />
+                            </TouchableOpacity>
+                            <TouchableOpacity activeOpacity={.7} style={styles.cardOptionButton}>
+                                <MaterialIcons name="delete" size={18} color={'#d42626'} />
+                            </TouchableOpacity>
+                        </View>
                     </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={.7} style={styles.cardOptionButton}>
-                        <MaterialIcons name="delete" size={18} color={'#d42626'}/>
-                    </TouchableOpacity>
-                </View>
-            </TouchableOpacity>
-            <TouchableOpacity activeOpacity={.7} style={styles.cardContainer}>
-                <Text style={styles.title}>Non labore exercitation pariatur dolore deserunt.</Text>
-                <Text style={styles.description}>Consequat Lorem irure elit proident dolor ex in minim cupidatat tempor in Lorem est aliquip. Enim eu incididunt non laborum nulla dolore amet commodo cillum do. Consectetur qui sit Lorem ut ut excepteur velit esse. Officia dolor proident deserunt culpa eiusmod incididunt non eiusmod ex elit. Cupidatat id dolore nulla culpa aliqua sunt ut nulla quis. Do ullamco anim qui officia occaecat deserunt deserunt nulla commodo commodo ea dolore veniam culpa. Dolor anim reprehenderit amet laboris amet non aliquip ex sint.</Text>
-                <View style={styles.cardOptionContainer}>
-                    <TouchableOpacity activeOpacity={.7} style={styles.cardOptionButton}>
-                        <MaterialIcons name="edit" size={18} />
-                    </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={.7} style={styles.cardOptionButton}>
-                        <MaterialIcons name="delete" size={18} color={'#d42626'}/>
-                    </TouchableOpacity>
-                </View>
-            </TouchableOpacity>
+                )}
+            />
+
             <TouchableOpacity activeOpacity={.7} style={styles.addButton} onPress={() => setShowModal(true)}>
                 <Text style={styles.addButtonText}>+</Text>
             </TouchableOpacity>
+
         </View>
     )
 }
@@ -62,6 +66,7 @@ const styles = StyleSheet.create({
         width: '100%',
         padding: 16,
         gap: 8,
+        marginVertical: 8,
         borderRadius: 12,
         backgroundColor: '#ffffff',
         elevation: 1,
@@ -86,9 +91,9 @@ const styles = StyleSheet.create({
         right: 24,
         elevation: 5,
     },
-    addButtonText: { 
-        color: '#ffffff', 
-        fontSize: 28 
+    addButtonText: {
+        color: '#ffffff',
+        fontSize: 28
     },
     input: {
         padding: 12,
