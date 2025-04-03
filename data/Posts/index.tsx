@@ -1,10 +1,14 @@
 import React, { createContext, useContext, useState } from "react";
 import { api } from "@/service/axios"
 import { GetPostsResponse } from "@/model/get_posts.response"
+import { CreatePostRequest } from "@/model/create_posts.request";
 
 interface PostsContextProps {
     posts: GetPostsResponse[];
     getPosts: () => void;
+    createPostRequest: CreatePostRequest;
+    setCreatePostRequest: (data: CreatePostRequest) => void;
+    createPost: (data: CreatePostRequest) => void;
 }
 
 const PostsContext = createContext<PostsContextProps>({} as PostsContextProps);
@@ -14,6 +18,7 @@ export const usePosts = () => {
 };
 
 export function PostsProvider({ children }: { children: React.ReactNode }) {
+
     const [posts, setPosts] = useState<GetPostsResponse[]>([]);
 
     const getPosts = async () => {
@@ -25,8 +30,22 @@ export function PostsProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
+    const [createPostRequest, setCreatePostRequest] =
+        useState<CreatePostRequest>({} as CreatePostRequest);
+
+
+    const createPost = async (data: CreatePostRequest) => {
+        try {
+            await api.post('/posts', data)
+            console.log("Post cadastrado com sucesso: " + data)
+        } catch (error) {
+            console.error("Erro ao cadastrar posts:", error);
+        }
+
+    }
+
     return (
-        <PostsContext.Provider value={{ posts, getPosts }}>
+        <PostsContext.Provider value={{ posts, getPosts, createPost, createPostRequest, setCreatePostRequest }}>
             {children}
         </PostsContext.Provider>
     );

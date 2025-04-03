@@ -6,23 +6,50 @@ import { StyleSheet, TextInput, TouchableOpacity, FlatList } from "react-native"
 import { usePosts } from "@/data/Posts";
 
 export default function Index() {
+
     const [showModal, setShowModal] = useState(false);
 
-    const { posts, getPosts } = usePosts();
+    const [title, setTitle] = useState('')
+
+    const [body, setBody] = useState('')
+
+    const {
+        posts,
+        getPosts,
+        createPost,
+        createPostRequest,
+        setCreatePostRequest
+    } = usePosts();
 
     useEffect(() => {
         getPosts();
     }, [])
+
+    const createPostHandler = () => {
+        createPost({title, body, userId: 1});
+        setShowModal(false)
+    }
 
     return (
         <View lightColor="#F2F4F7" style={styles.container}>
             <BaseModal visible={showModal} onRequestClose={() => setShowModal(false)}>
                 <Text style={styles.title}>Adicionar Post</Text>
                 <View style={styles.modalContainer}>
-                    <TextInput placeholder="Título" style={styles.input} />
-                    <TextInput placeholder="Descrição" style={styles.textArea} multiline />
+                    <TextInput
+                        placeholder="Título"
+                        style={styles.input}
+                        onChangeText={setTitle}
+                        value={title}
+                    />
+                    <TextInput
+                        placeholder="Descrição"
+                        style={styles.textArea}
+                        onChangeText={setBody}
+                        value={body}
+                        multiline
+                    />
                 </View>
-                <TouchableOpacity activeOpacity={.7} style={styles.button}>
+                <TouchableOpacity activeOpacity={.7} style={styles.button} onPress={createPostHandler}>
                     <Text style={styles.buttonText}>Adicionar</Text>
                 </TouchableOpacity>
             </BaseModal>
