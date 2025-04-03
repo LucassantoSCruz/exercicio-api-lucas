@@ -4,6 +4,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import React, { useState, useEffect } from "react";
 import { StyleSheet, TextInput, TouchableOpacity, FlatList } from "react-native";
 import { usePosts } from "@/data/Posts";
+import { ChangePostRequest } from "@/model/change-post.request";
 
 export default function Index() {
 
@@ -18,7 +19,10 @@ export default function Index() {
         getPosts,
         createPost,
         createPostRequest,
-        setCreatePostRequest
+        setCreatePostRequest,
+        createPostRequestStatus,
+        changePost,
+        changePostRequestStatus
     } = usePosts();
 
     useEffect(() => {
@@ -27,8 +31,19 @@ export default function Index() {
 
     const createPostHandler = () => {
         createPost({title, body, userId: 1});
+        console.log(createPostRequestStatus);
         setShowModal(false)
     }
+
+    const editPost = () => {
+        if (!selectedPost.id) return
+
+        changePost({title, body, userId: 1, id: selectedPost.id}, selectedPost)
+
+        console.log(changePostRequestStatus);
+    }
+
+    const [ selectedPost, setSelectedPost ] = useState<ChangePostRequest[]>([])
 
     return (
         <View lightColor="#F2F4F7" style={styles.container}>
@@ -62,7 +77,7 @@ export default function Index() {
                         <Text style={styles.title}>{item.title}</Text>
                         <Text style={styles.description}>{item.body}</Text>
                         <View style={styles.cardOptionContainer}>
-                            <TouchableOpacity activeOpacity={.7} style={styles.cardOptionButton} onPress={() => setShowModal(true)}>
+                            <TouchableOpacity activeOpacity={.7} style={styles.cardOptionButton} onPress={() => {setShowModal(true), console.log(item.id)}}>
                                 <MaterialIcons name="edit" size={18} />
                             </TouchableOpacity>
                             <TouchableOpacity activeOpacity={.7} style={styles.cardOptionButton}>
