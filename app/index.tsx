@@ -14,6 +14,8 @@ export default function Index() {
 
     const [body, setBody] = useState('')
 
+    const [selectedPost, setSelectedPost] = useState<ChangePostRequest[]>([])
+
     const {
         posts,
         getPosts,
@@ -22,7 +24,10 @@ export default function Index() {
         setCreatePostRequest,
         createPostRequestStatus,
         changePost,
-        changePostRequestStatus
+        changePostRequestStatus,
+        deletePost,
+        deletePostRequestStatus,
+        setDeletePostRequestStatus
     } = usePosts();
 
     useEffect(() => {
@@ -30,20 +35,21 @@ export default function Index() {
     }, [])
 
     const createPostHandler = () => {
-        createPost({title, body, userId: 1});
+        createPost({ title, body, userId: 1 });
         console.log(createPostRequestStatus);
         setShowModal(false)
     }
 
-    const editPost = () => {
-        if (!selectedPost.id) return
-
-        changePost({title, body, userId: 1, id: selectedPost.id}, selectedPost)
-
+    const changePostHandler = (id: number) => {
+        setShowModal(true)
+        changePost({title: title, body: body, userId: 1} , id);
         console.log(changePostRequestStatus);
     }
 
-    const [ selectedPost, setSelectedPost ] = useState<ChangePostRequest[]>([])
+    const deletePostHandler = (id: number) => {
+        deletePost(id)
+        console.log(deletePostRequestStatus)
+    }
 
     return (
         <View lightColor="#F2F4F7" style={styles.container}>
@@ -77,10 +83,10 @@ export default function Index() {
                         <Text style={styles.title}>{item.title}</Text>
                         <Text style={styles.description}>{item.body}</Text>
                         <View style={styles.cardOptionContainer}>
-                            <TouchableOpacity activeOpacity={.7} style={styles.cardOptionButton} onPress={() => {setShowModal(true), console.log(item.id)}}>
+                            <TouchableOpacity activeOpacity={.7} style={styles.cardOptionButton} onPress={() => changePostHandler(item.id)}>
                                 <MaterialIcons name="edit" size={18} />
                             </TouchableOpacity>
-                            <TouchableOpacity activeOpacity={.7} style={styles.cardOptionButton}>
+                            <TouchableOpacity activeOpacity={.7} style={styles.cardOptionButton} onPress={() => deletePostHandler(item.id)}>
                                 <MaterialIcons name="delete" size={18} color={'#d42626'} />
                             </TouchableOpacity>
                         </View>

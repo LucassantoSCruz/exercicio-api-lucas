@@ -16,6 +16,9 @@ interface PostsContextProps {
     createPostRequestStatus: RequestStatus
     changePost: (data: ChangePostRequest, id: number) => void;
     changePostRequestStatus: RequestStatus
+    deletePost: (id: number) => void;
+    deletePostRequestStatus: RequestStatus;
+    setDeletePostRequestStatus: (status: RequestStatus) => void;
 }
 
 const PostsContext = createContext<PostsContextProps>({} as PostsContextProps);
@@ -33,6 +36,10 @@ export function PostsProvider({ children }: { children: React.ReactNode }) {
     })
 
     const [changePostRequestStatus, setChangePostRequestStatus] = useState<RequestStatus>({
+        status: 'idle',
+    })
+
+    const [deletePostRequestStatus, setDeletePostRequestStatus] = useState<RequestStatus>({
         status: 'idle',
     })
 
@@ -64,6 +71,7 @@ export function PostsProvider({ children }: { children: React.ReactNode }) {
 
         try {
             await api.post('/posts', data)
+            console.log('Cadastrado com sucesso')
             setCreatePostRequestStatus({ status: 'succeeded' })
 
         } catch (error) {
@@ -80,15 +88,49 @@ export function PostsProvider({ children }: { children: React.ReactNode }) {
 
         try {
             await api.patch(`/posts/${id}`, data)
+            console.log(data)
+            console.log('Alterado com sucesso')
             setChangePostRequestStatus({ status: 'succeeded' })
+
         } catch (error) {
             console.error("Erro ao alterar post:", error);
             setCreatePostRequestStatus({ status: 'failed' })
         }
     }
 
+    // ----------------------------------------------------------------------------
+
+    const deletePost = async (id: number) => {
+
+        setDeletePostRequestStatus({ status: 'pending' })
+
+        try {
+            await api.delete(`/posts/${id}`);
+            console.log("Deletado o post: ", { id })
+            setDeletePostRequestStatus({ status: 'succeeded' })
+
+        } catch (error) {
+            console.error("Erro ao deletar post:", error);
+            setDeletePostRequestStatus({ status: 'failed' })
+        }
+    }
+
     return (
-        <PostsContext.Provider value={{ posts, getPosts, createPost, createPostRequest, setCreatePostRequest, createPostRequestStatus, changePost, changePostRequestStatus }}>
+        <PostsContext.Provider
+            value={{
+                posts,
+                getPosts,
+                createPost,
+                createPostRequest,
+                setCreatePostRequest,
+                createPostRequestStatus,
+                changePost,
+                changePostRequestStatus,
+                deletePost,
+                deletePostRequestStatus,
+                setDeletePostRequestStatus
+            }}
+        >
             {children}
         </PostsContext.Provider>
     );
