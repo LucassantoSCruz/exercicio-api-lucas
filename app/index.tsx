@@ -12,6 +12,8 @@ export default function Index() {
 
     const [showModalChangePost, setShowModalChangePost] = useState(false);
 
+    const [showModalDeletePost, setShowModalDeletePost] = useState(false);
+
     const [title, setTitle] = useState('')
     const [body, setBody] = useState('')
     const [id, setId] = useState(0)
@@ -58,9 +60,20 @@ export default function Index() {
         setBody('');
     }
 
-    const deletePostHandler = (id: number) => {
-        deletePost(id)
+    const openDeletePostModal = (id: number, title: string, body: string) => {
+        console.log("Id selecionado: ", id)
+        setId(id)
+        setTitle(title)
+        setBody(body)
+        setShowModalDeletePost(true)
+    }
+
+    const deletePostHandler = () => {
+        deletePost(id); 
         console.log(deletePostRequestStatus)
+        setShowModalDeletePost(false);
+        setTitle('');
+        setBody('');
     }
 
     return (
@@ -106,7 +119,22 @@ export default function Index() {
                     />
                 </View>
                 <TouchableOpacity activeOpacity={.7} style={styles.button} onPress={changePostHandler}>
-                    <Text style={styles.buttonText}>Adicionar</Text>
+                    <Text style={styles.buttonText}>Salvar</Text>
+                </TouchableOpacity>
+            </BaseModal>
+
+            <BaseModal visible={showModalDeletePost} onRequestClose={() => setShowModalDeletePost(false)}>
+                <Text style={styles.title}>Excluir Post</Text>
+                <View style={styles.modalContainer}>
+                    <Text style={styles.title}>
+                        {title}
+                    </Text>
+                    <Text>
+                        {body}
+                    </Text>
+                </View>
+                <TouchableOpacity activeOpacity={.7} style={styles.button} onPress={deletePostHandler}>
+                    <Text style={styles.buttonText}>Excluir</Text>
                 </TouchableOpacity>
             </BaseModal>
 
@@ -121,7 +149,7 @@ export default function Index() {
                             <TouchableOpacity activeOpacity={.7} style={styles.cardOptionButton} onPress={() => openEditPostModal(item.id, item.title, item.body)}>
                                 <MaterialIcons name="edit" size={18} />
                             </TouchableOpacity>
-                            <TouchableOpacity activeOpacity={.7} style={styles.cardOptionButton} onPress={() => deletePostHandler(item.id)}>
+                            <TouchableOpacity activeOpacity={.7} style={styles.cardOptionButton} onPress={() => openDeletePostModal(item.id, item.title, item.body)}>
                                 <MaterialIcons name="delete" size={18} color={'#d42626'} />
                             </TouchableOpacity>
                         </View>
