@@ -8,13 +8,13 @@ import { ChangePostRequest } from "@/model/change-post.request";
 
 export default function Index() {
 
-    const [showModal, setShowModal] = useState(false);
+    const [showModalCreatePost, setShowModalCreatePost] = useState(false);
+
+    const [showModalChangePost, setShowModalChangePost] = useState(false);
 
     const [title, setTitle] = useState('')
-
     const [body, setBody] = useState('')
-
-    const [selectedPost, setSelectedPost] = useState<ChangePostRequest[]>([])
+    const [id, setId] = useState(0)
 
     const {
         posts,
@@ -37,13 +37,25 @@ export default function Index() {
     const createPostHandler = () => {
         createPost({ title, body, userId: 1 });
         console.log(createPostRequestStatus);
-        setShowModal(false)
+        setShowModalCreatePost(false);
+        setTitle('');
+        setBody('')
     }
 
-    const changePostHandler = (id: number) => {
-        setShowModal(true)
-        changePost({title: title, body: body, userId: 1} , id);
+    const openEditPostModal = (id: number, title: string, body: string) => {
+        console.log("Id selecionado: ", id)
+        setId(id)
+        setTitle(title)
+        setBody(body)
+        setShowModalChangePost(true)
+    }
+
+    const changePostHandler = () => {
+        changePost({ title, body, userId: 1 }, Number(id)); 
         console.log(changePostRequestStatus);
+        setShowModalChangePost(false); 
+        setTitle('');
+        setBody('');
     }
 
     const deletePostHandler = (id: number) => {
@@ -53,7 +65,8 @@ export default function Index() {
 
     return (
         <View lightColor="#F2F4F7" style={styles.container}>
-            <BaseModal visible={showModal} onRequestClose={() => setShowModal(false)}>
+
+            <BaseModal visible={showModalCreatePost} onRequestClose={() => setShowModalCreatePost(false)}>
                 <Text style={styles.title}>Adicionar Post</Text>
                 <View style={styles.modalContainer}>
                     <TextInput
@@ -75,6 +88,28 @@ export default function Index() {
                 </TouchableOpacity>
             </BaseModal>
 
+            <BaseModal visible={showModalChangePost} onRequestClose={() => setShowModalChangePost(false)}>
+                <Text style={styles.title}>Editar Post</Text>
+                <View style={styles.modalContainer}>
+                    <TextInput
+                        placeholder="Título"
+                        style={styles.input}
+                        onChangeText={setTitle}
+                        value={title}
+                    />
+                    <TextInput
+                        placeholder="Descrição"
+                        style={styles.textArea}
+                        onChangeText={setBody}
+                        value={body}
+                        multiline
+                    />
+                </View>
+                <TouchableOpacity activeOpacity={.7} style={styles.button} onPress={changePostHandler}>
+                    <Text style={styles.buttonText}>Adicionar</Text>
+                </TouchableOpacity>
+            </BaseModal>
+
             <FlatList
                 data={posts}
                 keyExtractor={(item) => item.id.toString()}
@@ -83,7 +118,7 @@ export default function Index() {
                         <Text style={styles.title}>{item.title}</Text>
                         <Text style={styles.description}>{item.body}</Text>
                         <View style={styles.cardOptionContainer}>
-                            <TouchableOpacity activeOpacity={.7} style={styles.cardOptionButton} onPress={() => changePostHandler(item.id)}>
+                            <TouchableOpacity activeOpacity={.7} style={styles.cardOptionButton} onPress={() => openEditPostModal(item.id, item.title, item.body)}>
                                 <MaterialIcons name="edit" size={18} />
                             </TouchableOpacity>
                             <TouchableOpacity activeOpacity={.7} style={styles.cardOptionButton} onPress={() => deletePostHandler(item.id)}>
@@ -94,7 +129,7 @@ export default function Index() {
                 )}
             />
 
-            <TouchableOpacity activeOpacity={.7} style={styles.addButton} onPress={() => setShowModal(true)}>
+            <TouchableOpacity activeOpacity={.7} style={styles.addButton} onPress={() => setShowModalCreatePost(true)}>
                 <Text style={styles.addButtonText}>+</Text>
             </TouchableOpacity>
 
