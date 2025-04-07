@@ -5,8 +5,11 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, TextInput, TouchableOpacity, FlatList } from "react-native";
 import { usePosts } from "@/data/Posts";
 import { ChangePostRequest } from "@/model/change-post.request";
+import { DarkTheme, DefaultTheme, ThemeProvider, useTheme } from '@react-navigation/native';
 
 export default function Index() {
+
+    const { colors } = useTheme();
 
     const [showModalCreatePost, setShowModalCreatePost] = useState(false);
 
@@ -77,20 +80,23 @@ export default function Index() {
     }
 
     return (
-        <View lightColor="#F2F4F7" style={styles.container}>
+        <View lightColor="#F2F4F7" style={[styles.container, { backgroundColor: colors.background }]}>
 
-            <BaseModal visible={showModalCreatePost} onRequestClose={() => setShowModalCreatePost(false)}>
+            <BaseModal visible={showModalCreatePost} style={{backgroundColor: colors.card}} onRequestClose={() => setShowModalCreatePost(false)}>
                 <Text style={styles.title}>Adicionar Post</Text>
-                <View style={styles.modalContainer}>
+                <View style={[styles.modalContainer, { backgroundColor: colors.card }]}>
                     <TextInput
                         placeholder="Título"
-                        style={styles.input}
+                        placeholderTextColor={colors.text}
+                        style={[styles.input, {color: colors.text}]}
                         onChangeText={setTitle}
                         value={title}
+                        selectionColor={colors.text}
                     />
                     <TextInput
                         placeholder="Descrição"
-                        style={styles.textArea}
+                        placeholderTextColor={colors.text}
+                        style={[styles.textArea, {color: colors.text}]}
                         onChangeText={setBody}
                         value={body}
                         multiline
@@ -103,16 +109,18 @@ export default function Index() {
 
             <BaseModal visible={showModalChangePost} onRequestClose={() => setShowModalChangePost(false)}>
                 <Text style={styles.title}>Editar Post</Text>
-                <View style={styles.modalContainer}>
+                <View style={[styles.modalContainer, { backgroundColor: colors.card }]}>
                     <TextInput
                         placeholder="Título"
-                        style={styles.input}
+                        placeholderTextColor={colors.text}
+                        style={[styles.input, {color: colors.text}]}
                         onChangeText={setTitle}
                         value={title}
                     />
                     <TextInput
                         placeholder="Descrição"
-                        style={styles.textArea}
+                        placeholderTextColor={colors.text}
+                        style={[styles.textArea, {color: colors.text}]}
                         onChangeText={setBody}
                         value={body}
                         multiline
@@ -125,7 +133,7 @@ export default function Index() {
 
             <BaseModal visible={showModalDeletePost} onRequestClose={() => setShowModalDeletePost(false)}>
                 <Text style={styles.title}>Excluir Post</Text>
-                <View style={styles.modalContainer}>
+                <View style={[styles.modalContainer, { backgroundColor: colors.card }]}>
                     <Text style={styles.title}>
                         {title}
                     </Text>
@@ -133,7 +141,7 @@ export default function Index() {
                         {body}
                     </Text>
                 </View>
-                <TouchableOpacity activeOpacity={.7} style={styles.button} onPress={deletePostHandler}>
+                <TouchableOpacity activeOpacity={.7} style={[styles.button, {backgroundColor: colors.notification}]} onPress={deletePostHandler}>
                     <Text style={styles.buttonText}>Excluir</Text>
                 </TouchableOpacity>
             </BaseModal>
@@ -142,14 +150,14 @@ export default function Index() {
                 data={posts}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                    <TouchableOpacity activeOpacity={.7} style={styles.cardContainer}>
+                    <TouchableOpacity activeOpacity={.7} style={[styles.cardContainer, { backgroundColor: colors.card }]}>
                         <Text style={styles.title}>{item.title}</Text>
                         <Text style={styles.description}>{item.body}</Text>
-                        <View style={styles.cardOptionContainer}>
-                            <TouchableOpacity activeOpacity={.7} style={styles.cardOptionButton} onPress={() => openEditPostModal(item.id, item.title, item.body)}>
-                                <MaterialIcons name="edit" size={18} />
+                        <View style={[styles.cardOptionContainer, {backgroundColor: colors.card}]}>
+                            <TouchableOpacity activeOpacity={.7} style={[styles.cardOptionButton, {backgroundColor: colors.card, borderColor: colors.border}]} onPress={() => openEditPostModal(item.id, item.title, item.body)}>
+                                <MaterialIcons name="edit" size={18} color={colors.text}/>
                             </TouchableOpacity>
-                            <TouchableOpacity activeOpacity={.7} style={styles.cardOptionButton} onPress={() => openDeletePostModal(item.id, item.title, item.body)}>
+                            <TouchableOpacity activeOpacity={.7} style={[styles.cardOptionButton, {backgroundColor: colors.card, borderColor: colors.border}]} onPress={() => openDeletePostModal(item.id, item.title, item.body)}>
                                 <MaterialIcons name="delete" size={18} color={'#d42626'} />
                             </TouchableOpacity>
                         </View>
@@ -247,6 +255,7 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         alignSelf: 'center',
         backgroundColor: '#e3e3e3',
-        padding: 4
+        padding: 4,
+        borderWidth: 1
     }
 })
