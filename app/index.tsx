@@ -2,9 +2,9 @@ import { BaseModal } from "@/components/BaseModal";
 import { Text, View } from "@/components/Themed";
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useState, useEffect } from "react";
-import { StyleSheet, TextInput, TouchableOpacity, FlatList, ActivityIndicator, Appearance } from "react-native";
+import { StyleSheet, TextInput, TouchableOpacity, FlatList, Appearance } from "react-native";
 import { usePosts } from "@/data/Posts";
-import { DarkTheme, useTheme } from '@react-navigation/native';
+import { useTheme } from '@react-navigation/native';
 import { GetPostsResponse } from "@/model/get-posts.response";
 import { useColorScheme } from "@/components/useColorScheme";
 
@@ -13,6 +13,7 @@ export default function Index() {
     const {
         posts,
         getPosts,
+        getPostsResponseStatus,
         createPost,
         createPostRequest,
         setCreatePostRequest,
@@ -107,6 +108,7 @@ export default function Index() {
         const initialValue = posts.slice(0, pageSize);
         setDisplayedData(initialValue);
         setCurrentPage(1);
+        console.log(getPostsResponseStatus);
     }, [posts]);
 
     // ----------------------------------------------------------------------------

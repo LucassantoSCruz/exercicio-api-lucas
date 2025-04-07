@@ -9,7 +9,7 @@ import { CreatePostResponse } from "@/model/create-posts.response";
 interface PostsContextProps {
     posts: GetPostsResponse[];
     getPosts: () => void;
-    createPostRequest: CreatePostRequest;
+    getPostsResponseStatus: RequestStatus;
     setCreatePostRequest: (data: CreatePostRequest) => void;
     createPost: (data: CreatePostRequest) => void;
     createPostResponse: CreatePostResponse
@@ -30,6 +30,10 @@ export const usePosts = () => {
 export function PostsProvider({ children }: { children: React.ReactNode }) {
 
     const [posts, setPosts] = useState<GetPostsResponse[]>([]);
+
+    const [getPostsResponseStatus, setGetPostsResponseStatus] = useState<RequestStatus>({
+        status: 'idle',
+    })
 
     const [createPostRequestStatus, setCreatePostRequestStatus] = useState<RequestStatus>({
         status: 'idle',
@@ -53,11 +57,15 @@ export function PostsProvider({ children }: { children: React.ReactNode }) {
 
     const getPosts = async () => {
 
+        setGetPostsResponseStatus({ status: 'pending'})
+
         try {
             const { data } = await api.get("/posts");
             setPosts(data);
+            setGetPostsResponseStatus({ status: 'succeeded'})
         } catch (error) {
             console.error("Erro ao buscar posts:", error);
+            setGetPostsResponseStatus({ status: 'failed'})
         }
     }
 
@@ -72,7 +80,7 @@ export function PostsProvider({ children }: { children: React.ReactNode }) {
             // console.log('Cadastrado com sucesso')
             setCreatePostRequestStatus({ status: 'succeeded' })
         } catch (error) {
-            console.error("Erro ao cadastrar posts:", error);
+            // console.error("Erro ao cadastrar posts:", error);
             setCreatePostRequestStatus({ status: 'failed' })
         }
     }
@@ -115,6 +123,7 @@ export function PostsProvider({ children }: { children: React.ReactNode }) {
             value={{
                 posts,
                 getPosts,
+                getPostsResponseStatus,
                 createPost,
                 createPostRequest,
                 setCreatePostRequest,
