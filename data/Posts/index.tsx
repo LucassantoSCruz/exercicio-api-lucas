@@ -69,7 +69,7 @@ export function PostsProvider({ children }: { children: React.ReactNode }) {
 
         try {
             await api.post('/posts', data)
-            console.log('Cadastrado com sucesso')
+            // console.log('Cadastrado com sucesso')
             setCreatePostRequestStatus({ status: 'succeeded' })
         } catch (error) {
             console.error("Erro ao cadastrar posts:", error);
@@ -85,8 +85,8 @@ export function PostsProvider({ children }: { children: React.ReactNode }) {
 
         try {
             await api.patch(`/posts/${id}`, data)
-            console.log("Id Post: ", id, " - Dados do post", data)
-            console.log('Alterado com sucesso')
+            // console.log("Id Post: ", id, " - Dados do post", data)
+            // console.log('Alterado com sucesso')
             setChangePostRequestStatus({ status: 'succeeded' })
         } catch (error) {
             console.error("Erro ao alterar post:", error);
@@ -102,7 +102,7 @@ export function PostsProvider({ children }: { children: React.ReactNode }) {
 
         try {
             await api.delete(`/posts/${id}`);
-            console.log("Deletado o post com o id: ", id)
+            // console.log("Deletado o post com o id: ", id)
             setDeletePostRequestStatus({ status: 'succeeded' })
         } catch (error) {
             console.error("Erro ao deletar post:", error);
