@@ -12,7 +12,6 @@ interface PostsContextProps {
     getPostsResponseStatus: RequestStatus;
     setCreatePostRequest: (data: CreatePostRequest) => void;
     createPost: (data: CreatePostRequest) => void;
-    createPostResponse: CreatePostResponse
     createPostRequestStatus: RequestStatus
     changePost: (data: ChangePostRequest, id: number) => void;
     changePostRequestStatus: RequestStatus
@@ -125,7 +124,6 @@ export function PostsProvider({ children }: { children: React.ReactNode }) {
                 getPosts,
                 getPostsResponseStatus,
                 createPost,
-                createPostRequest,
                 setCreatePostRequest,
                 createPostRequestStatus,
                 changePost,

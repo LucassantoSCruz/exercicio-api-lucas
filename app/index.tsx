@@ -15,14 +15,11 @@ export default function Index() {
         getPosts,
         getPostsResponseStatus,
         createPost,
-        createPostRequest,
-        setCreatePostRequest,
         createPostRequestStatus,
         changePost,
         changePostRequestStatus,
         deletePost,
-        deletePostRequestStatus,
-        setDeletePostRequestStatus
+        deletePostRequestStatus
     } = usePosts();
 
     // ----------------------------------------------------------------------------
